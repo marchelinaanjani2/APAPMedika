@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="roomOptions">
+        <option value="" disabled selected>Select a room</option>
+        <option th:each="room : ${availableRooms}" 
+                th:value="${room.id}" 
+                th:text="${room.name} + ' ' + ${room.pricePerDay} + '/Day ' + ${roomQuotaMap[room.id]} + ' Quota Available, ' + ${room.maxCapacity} + ' Pax'">
+        </option>
+    </div>
+</body>
+</html>

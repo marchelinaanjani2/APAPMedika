@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <div th:include="~{fragments/common :: css}"></div>
+    <div th:include="~{fragments/common :: js}"></div>
+    <title>Room Detail</title>
+    <style>
+        .container {
+            padding-top: 30px;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: #1a5794;
+        }
+
+        .card-text {
+            color: #495057;
+        }
+
+        .fw-bold {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: #6c757d;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #1a5794;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-secondary {
+            background-color: #525961;
+            border: none;
+            color: #726969;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4d396a;
+        }
+
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0;
+        }
+
+        .pagination-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .pagination-control > * {
+            margin-right: 10px;
+        }
+
+        .pagination-control .select-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .pagination-control .select-container select {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .pagination-control .page-info {
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="container">
+        <div class="text-center my-4">
+            <h2>Room Detail</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="card w-100" style="max-width: 80rem;">  
+                <div class="card-body">
+                    <div class="row my-4">
+                        <h4 class="card-title text-center" th:text="${room.name}"></h4>
+                    </div>
+                    <input type="hidden" id="roomId" value="${room.id}" />
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-3">Room ID</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-8" th:text="${room.id}"></p>
+                    </div>
+    
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-3">Room Name:</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-8" th:text="${room.name}"></p>
+                    </div>
+    
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-3">Max Capacity:</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-8" th:text="${room.maxCapacity} + ' Pax'"></p>
+                    </div>
+    
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-3">Price:</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-8" th:text="${'Rp' + room.pricePerDay + ' /Day'}"></p>
+                    </div>
+    
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-3">Description:</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-8" th:text="${room.description}"></p>
+                    </div>
+                    
+                    <h3>Patient              :</h3>
+                    <div class="form-group row my-3">
+                        <label for="reservationDateIn" class="col-sm-5 fw-bold col-form-label">Reservation Date In</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" type="date" id="reservationDateIn" name="dateIn" />
+                        </div>
+                    </div>
+                    <div class="form-group row my-3">
+                        <label for="reservationDateOut" class="col-sm-5 fw-bold col-form-label">Reservation Date Out</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" type="date" id="reservationDateOut" name="dateOut" />
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary w-100 mb-3" onclick="applyFilter()">
+                        Apply
+                    </button>
+
+
+                    <div class="my-4">
+                        <table id="roomDetail-table" class="table table-bordered table-striped">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col" class="text-center">No</th>
+                                    <th scope="col" class="text-center">Name</th>
+                                    <th scope="col" class="text-center">Gender</th>
+                                    <th scope="col" class="text-center">Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="reservation, iterStat : ${listReservations}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${reservation.patientId.name}"></td>
+                                    <td th:text="${reservation.patientId.gender}"></td>
+                                    <td th:text="${reservation.patientId.email}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+    
+                    <div class="text-center m-3" style="display: flex; justify-content: space-between;">
+                        <a type="button" class="btn btn-secondary" th:href="@{/rooms}">Back</a>
+                        <div style="display: flex;">
+                            <a type="button" class="btn btn-warning" th:href="@{/rooms/{roomId}/update(roomId=${room.id})}">Update</a>
+                            <!-- <a type="button" class="btn btn-warning" th:href="@{/reservation/{reservationId}(reservationId=${listReservations.id})}">Back</a> -->
+
+                            
+                            <!-- Tombol Delete -->
+                            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Modal Konfirmasi -->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Delete Room</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Are you sure want to delete <strong th:text="${room.name}"></strong> room?
+                          </div>
+                          <div class="modal-footer">
+                            <form th:action="@{/rooms/{roomId}/delete(roomId=${room.id})}" method="post">
+                              <button type="submit" class="btn btn-md btn-primary">Yes</button>
+                              <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal">Cancel</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function applyFilter() {
+            const roomId = document.getElementById('roomId').value;
+            const dateIn = document.getElementById('reservationDateIn').value;
+            const dateOut = document.getElementById('reservationDateOut').value;
+
+            // Cek apakah tanggal diisi
+            if (!dateIn || !dateOut) {
+                alert("Please select both reservation dates.");
+                return;
+            }
+
+            const url = `/rooms/${roomId}?dateIn=${dateIn}&dateOut=${dateOut}`;
+            window.location.href = url;
+        }
+
+
+    </script>
+     <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
+
+    <!-- Initialize DataTables -->
+    <script>
+        $(document).ready(function () {
+            $('#roomDetail-table').DataTable({
+                searching: false, 
+                paging: true,
+                pageLength: 10, 
+                lengthMenu: [ 
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                columnDefs: [
+                    { orderable: false, targets: 3 } 
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

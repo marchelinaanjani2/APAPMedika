@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointment Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        .treatment-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .treatment-item button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Fragment -->
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Appointment Details</h2>
+
+        <!-- Success Message -->
+        <div th:if="${responseMessage}" class="alert alert-success" role="alert">
+            <span th:text="${responseMessage}"></span>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Appointment ID: <span th:text="${appointment.id}">APP001</span>
+            </div>
+            <div class="card-body">
+                <!-- Form untuk update diagnosis dan treatment -->
+                <form th:action="@{/appointment/note}" method="post" th:object="${appointment}">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <!-- Diagnosis -->
+                    <h5 class="card-title">Diagnosis</h5>
+                    <div class="mb-3">
+                        <textarea class="form-control" th:field="*{diagnosis}" placeholder="Enter diagnosis here" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Treatment List -->
+                    <h5>Treatments</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Treatment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loop through existing treatments -->
+                            <tr th:each="treatment, stat : *{treatments}">
+                                <td>
+                                    <input type="text" th:field="*{treatments[__${stat.index}__].name}" class="form-control" />
+                                </td>
+                                <td>
+                                    <!-- Button to delete a treatment row -->
+                                    <button type="submit" name="deleteRowUpdateAppointment" value="true" class="btn btn-danger"
+                                        th:attr="data-row=${stat.index}">
+                                        Delete
+                                    </button>
+                                    <input type="hidden" name="deleteRow" th:value="${stat.index}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Hidden input to manage treatment rows -->
+                    <input type="hidden" th:field="*{id}" />
+
+                    <!-- Button to add a new treatment row -->
+                    <button type="submit" name="addRowUpdateAppointment" value="true" class="btn btn-success mb-3">
+                        Add Treatment
+                    </button>
+
+                    <!-- Submit button to save changes -->
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+                </form>
+
+                <!-- Bagian Informasi lainnya -->
+                <h5 class="card-title">Total Fee</h5>
+                <p class="card-text">
+                    <strong>Total Fee:</strong> <span th:text="'Rp' + ${appointment.totalFee}">1.000.000</span>
+                </p>
+
+                <h5 class="card-title">Metadata</h5>
+                <p class="card-text">
+                    <strong>Created At:</strong> <span th:text="${#dates.format(appointment.createdAt, 'dd MMM yyyy')}">01 Jan 2024 10:00</span><br>
+                    <strong>Updated At:</strong> <span th:text="${#dates.format(appointment.updatedAt, 'dd MMM yyyy')}">01 Jan 2024 10:00</span>
+                </p>
+            </div>
+
+            <!-- Footer dengan tombol aksi lainnya -->
+            <div class="card-footer text-end">
+                <!-- Tombol Update -->
+                <a href="#" class="btn btn-warning me-2" th:href="@{'/appointment/' + ${appointment.id} + '/update'}">
+                    <i class="bi bi-pencil-square"></i> Update
+                </a>
+            
+                <!-- Tombol Mark as Done -->
+                <form th:action="@{'/appointment/' + ${appointment.id} + '/done'}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success me-2">
+                        <i class="bi bi-check-circle"></i> Mark as Done
+                    </button>
+                </form>
+            
+                <!-- Tombol Cancel -->
+                <form th:action="@{'/appointment/' + ${appointment.id} + '/cancel'}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger me-2">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                </form>
+            
+                <!-- Tombol Delete -->
+                <form th:action="@{'/appointment/delete'}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${appointment.id}" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76A6Fw+O6wB64oQlr0TwQqA3qkWZLrQfFRdQ2AG3ONBt+II9VY8VYAsL5zB5b0"
+            crossorigin="anonymous"></script>
+
+    <!-- JavaScript for dynamic treatment selection -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const treatmentSelect = document.getElementById('treatment-select');
+            const selectedTreatmentsContainer = document.getElementById('selected-treatments');
+            const treatmentIdsInput = document.getElementById('treatment-ids');
+            let selectedTreatments = [];
+
+            // Event listener untuk menambahkan treatment
+            document.getElementById('add-treatment-btn').addEventListener('click', function() {
+                const selectedTreatmentId = treatmentSelect.value;
+                const selectedTreatmentText = treatmentSelect.options[treatmentSelect.selectedIndex].text;
+
+                if (!selectedTreatments.includes(selectedTreatmentId)) {
+                    selectedTreatments.push(selectedTreatmentId);
+
+                    // Buat list item untuk treatment yang dipilih
+                    const li = document.createElement('li');
+                    li.classList.add('treatment-item');
+                    li.innerHTML = `
+                        ${selectedTreatmentText}
+                        <button type="button" class="btn btn-danger btn-sm remove-btn" data-id="${selectedTreatmentId}">Remove</button>
+                    `;
+                    selectedTreatmentsContainer.appendChild(li);
+
+                    // Update input hidden untuk menyimpan treatment IDs
+                    treatmentIdsInput.value = selectedTreatments.join(',');
+
+                    // Event listener untuk tombol remove
+                    li.querySelector('.remove-btn').addEventListener('click', function() {
+                        const treatmentId = this.getAttribute('data-id');
+                        selectedTreatments = selectedTreatments.filter(id => id !== treatmentId);
+                        treatmentIdsInput.value = selectedTreatments.join(',');
+                        li.remove();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

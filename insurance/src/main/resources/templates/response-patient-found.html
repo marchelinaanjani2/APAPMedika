@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
+    <title>Patient Found</title>
+</head>
+
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container">
+    <div class="text-center my-4"></div>
+    <div class="row justify-content-center">
+        <h2 style="text-align: center">Patient Found</h2>
+        <div class="card" style="width: 30rem;">
+            <div class="card-body">
+                <div class="col-12">
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-4">NIK</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-7" th:text="${patient.nik}"></p>
+                    </div>
+
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-4">Name</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-7" th:text="${patient.name}"></p>
+                    </div>
+
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-4">Date of Birth</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <div class="col-sm-7">
+                            <p class="card-text mb-0" th:text="${#dates.format(patient.birthDate, 'dd MMMM yyyy')}"></p>
+                            <p class="card-text" style="margin-top: 0;" th:text="${patient.convertDateToAge()}"></p>
+                        </div>
+                    </div>
+
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-4">Class</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-7" th:text="${patient.pClass}"></p>
+                    </div>
+
+                    <div class="row my-3">
+                        <p class="card-text fw-bold col-sm-4">Insurance Limit</p>
+                        <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                        <p class="card-text col-sm-7" th:text="${patient.getLimitFormatted()}"></p>
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-8">
+                            <a th:if="${patient.pClass == 1}" class="btn btn-secondary disabled" href="#" aria-disabled="true">
+                                Upgrade Class
+                            </a>
+                            <a th:if="${patient.pClass != 1}" class="btn btn-warning" th:href="|/patient/${patient.id}/upgrade-class|">
+                                Upgrade Class
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <a class="btn btn-danger me-2" href="/policy/all">Back</a>
+                        <a class="btn btn-primary" th:href="@{|/policy/${nik}/create|}">Continue</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

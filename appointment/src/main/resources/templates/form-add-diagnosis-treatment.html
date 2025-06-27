@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Add Diagnosis & Treatments</title>
+        <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+        <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    </head>
+    <body>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <div class="container">
+            <h2 class="mt-4">Add Diagnosis & Treatments for Appointment [[${appointment.id}]]</h2>
+            <form th:action="@{'/appointment/note'}" th:object="${appointment}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                    <label for="diagnosis" class="form-label">Diagnosis:</label>
+                    <textarea th:field="*{diagnosis}" class="form-control" required></textarea>
+                </div>
+                <!-- Pilih Treatments -->
+                <div class="mb-3">
+                    <label for="treatments" class="form-label">Treatments:</label>
+                    <select th:field="*{treatmentIds}" multiple class="form-control">
+                        <option th:each="treatment : ${listTreatment}"
+                                th:value="${treatment.id}"
+                                th:text="${treatment.name}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Save</button>
+            </form>
+        </div>
+    </body>
+</html>

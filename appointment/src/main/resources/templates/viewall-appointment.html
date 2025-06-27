@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Appointments</title>
+
+    <!-- Include jQuery and DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+</head>
+
+<body>
+    <!-- Navbar Fragment -->
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <div class="text-center my-4">
+            <h2>Appointments</h2>
+        </div>
+        <div class="text-center mb-4">
+            <a href="#" class="btn btn-info me-2" th:href="@{/appointment/show-statistic}">
+                <i class="bi bi-bar-chart"></i> Show Statistic
+            </a>
+            <a href="#" class="btn btn-success" th:href="@{/appointment/create-with-patient}">
+                <i class="bi bi-plus-circle"></i> Add Appointment
+            </a>
+        </div>
+
+        <!-- Search and Filter Form -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="searchName" class="form-control" placeholder="Search by Doctor or Patient Name">
+            </div>
+            <div class="col-md-3">
+                <select id="filterStatus" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="Created">Created</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" id="filterFrom" class="form-control mb-2" placeholder="From Date">
+                <input type="date" id="filterTo" class="form-control" placeholder="To Date">
+            </div>
+            <div class="col-md-2">
+                <button id="filterButton" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <table id="appointmentTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>ID</th>
+                    <th>Doctor</th>
+                    <th>Patient</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="appointment, iterStat : ${listAppointment}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td th:text="${appointment.id}"></td>
+                    <td th:text="${appointment.doctorName}"></td>
+                    <td th:text="${appointment.patientName}"></td>
+                    <td th:text="${#dates.format(appointment.date, 'EEEE, dd MMMM yyyy')}"></td>
+                    <td>
+                        <span th:if="${appointment.status == 0}" th:text="'Created'"></span>
+                        <span th:if="${appointment.status == 1}" th:text="'Completed'"></span>
+                        <span th:if="${appointment.status == 2}" th:text="'Cancelled'"></span>
+                        <span th:if="${appointment.status != 0 && appointment.status != 1 && appointment.status != 2}" th:text="'Unknown'"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/appointment/{id}(id=${appointment.id})}" class="btn btn-info btn-sm">
+                            <i class="bi bi-eye"></i> Detail
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var table = $('#appointmentTable').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "order": [], // Allow sorting on all columns
+                "initComplete": function() {
+                    // Add custom filter logic
+                    $('#filterButton').on('click', function() {
+                        var searchName = $('#searchName').val();
+                        var status = $('#filterStatus').val();
+                        var fromDate = $('#filterFrom').val();
+                        var toDate = $('#filterTo').val();
+
+                        // Search Doctor or Patient Name (Columns 2 and 3)
+                        table.columns([2,3]).search(searchName).draw();
+                        
+                        // Filter by Status
+                        table.columns(5).search(status);
+
+                        // Custom date filtering
+                        $.fn.dataTable.ext.search.push(
+                            function(settings, data, dataIndex) {
+                                var date = new Date(data[4]);
+                                var from = fromDate ? new Date(fromDate) : null;
+                                var to = toDate ? new Date(toDate) : null;
+
+                                if ((from === null && to === null) ||
+                                    (from === null && date <= to) ||
+                                    (to === null && date >= from) ||
+                                    (date >= from && date <= to)) {
+                                    return true;
+                                }
+                                return false;
+                            }
+                        );
+
+                        table.draw();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

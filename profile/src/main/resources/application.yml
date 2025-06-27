@@ -1,0 +1,26 @@
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: profile
+  datasource:
+    url: jdbc:postgresql://localhost:15001/profile
+    username: tk-apap-37
+    password: tk-apap-37
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8081
+
+profile:
+  app:
+    jwtSecret: "HasahZEdlrHVvnBMIlKPAoXFRILWdwVAuaGT"
+    jwtExpirationMs: 86400000
+

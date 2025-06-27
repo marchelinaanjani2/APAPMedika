@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css">
+
+    <title>Policy Detail</title>
+    <style>
+        .card-header-custom {
+            background-color: #95bfff;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.375rem 0.375rem 0 0;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #95bfff;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin-bottom: 2rem;
+        }
+
+        .text-end-align {
+            text-align: left;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            border-radius: 2%;
+        }
+
+        .card-header-custom {
+            margin-left: -1.25rem;
+            margin-right: -1.25rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+
+        .divider {
+            border-top: 1px solid #ccc;
+            margin: 1rem 0;
+        }
+
+        #coverageTable {
+            width: 75%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="card" style="width: 60rem;">
+            <div class="card-header-custom">
+                <div class="row">
+                    <div class="col">
+                        <h5>Policy Detail</h5>
+                    </div>
+                    <div class="col text-end">
+                        <a type="button" class="btn btn-warning" th:href="@{|/policy/${policy.id}/update|}">Update</a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Policy ID</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${policy.id}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Patient</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${policy.patient.name}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Company</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${policy.company.name}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Expiry Date</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${#dates.format(policy.expiryDate, 'dd MMMM yyyy')}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Total Coverage</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${policy.company.calculateTotalCoverage()}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Total Covered</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${policy.totalCovered}"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 text-end-align">
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Created At</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${#dates.format(policy.createdAt, 'dd MMMM yyyy | HH:mm:ss')}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Last Updated At</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:text="${#dates.format(policy.updatedAt, 'dd MMMM yyyy | HH:mm:ss')}"></p>
+                        </div>
+
+                        <div class="row my-3">
+                            <p class="card-text fw-bold col-sm-4">Status</p>
+                            <p class="card-text fw-bold col-sm-1" style="width: 2%">:</p>
+                            <p class="card-text col-sm-7" th:if="${policy.status == 0}">Created</p>
+                            <p class="card-text col-sm-7" th:if="${policy.status == 1}">Partially Claimed</p>
+                            <p class="card-text col-sm-7" th:if="${policy.status == 2}">Fully Claimed</p>
+                            <p class="card-text col-sm-7" th:if="${policy.status == 3}">Expired</p>
+                            <p class="card-text col-sm-7" th:if="${policy.status == 4}">Cancelled</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h5>Coverages</h5>
+                    <div class="divider"></div>
+                </div>
+
+                <table id="coverageTable" th:if="${policy.company.getListCoverage() != null && #lists.size(policy.company.getListCoverage()) > 0}"
+                       class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Coverage</th>
+                        <th>Coverage Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="coverage, stat: ${policy.company.getListCoverage()}">
+                        <td th:text="${stat.index + 1}"></td>
+                        <td th:text="${coverage.name}"></td>
+                        <td th:text="${coverage.coverageAmountToString()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="text-center">
+                    <a type="button" class="btn btn-primary" href="/policy/all">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Policy Cancellation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel this policy?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <a type="button" class="btn btn-danger" th:href="@{|/policy/${policy.id}/delete|}">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#coverageTable').DataTable({
+            "paging": true,
+            "lengthMenu": [3, 6, 9],
+            "pageLength": 8,
+            "ordering": true,
+            "info": true,
+            "searching": true
+        });
+    });
+</script>
+</body>
+
+</html>

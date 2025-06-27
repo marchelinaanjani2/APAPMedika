@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Patient Details</title>
+        <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+        <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    </head>
+    <body>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <div class="container">
+            <h2 class="mt-4">Patient Details</h2>
+            <table class="table">
+                <tr>
+                    <th>NIK</th>
+                    <td th:text="${patient.nik}"></td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td th:text="${patient.name}"></td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td th:text="${patient.email}"></td>
+                </tr>
+                <tr>
+                    <th>Gender</th>
+                    <td th:text="${patient.gender ? 'Female' : 'Male'}"></td>
+                </tr>
+                <tr>
+                    <th>Birth Date</th>
+                    <td th:text="${#dates.format(patient.birthDate, 'dd-MM-yyyy')}"></td>
+                </tr>
+                <tr>
+                    <th>Birth Place</th>
+                    <td th:text="${patient.birthPlace}"></td>
+                </tr>
+                <!-- Add more details as necessary -->
+            </table>
+            <a th:href="@{'/patient/' + ${patient.id} + '/update'}" class="btn btn-warning">Edit</a>
+            <a th:href="@{'/patient/' + ${patient.id} + '/delete'}" class="btn btn-danger">Delete</a>
+        </div>
+    </body>
+</html>

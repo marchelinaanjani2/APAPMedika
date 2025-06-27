@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apap Medika Insurance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .stats-card {
+            background-color: #29B6F6;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 10px;
+            position: relative;
+            width: 100%;
+        }
+
+        .square {
+            position: relative;
+            padding-bottom: 100%;
+        }
+
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .stats-card h1 {
+            font-size: 80px;
+        }
+
+        .stats-card p {
+            font-size: 25px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 64px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            display: flex;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="title">
+    Insurance System
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-3">
+            <div class="stats-card square">
+                <div class="content">
+                    <h1 th:text="|${policyCount}|"></h1>
+                    <p>Policy</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card square" style="background-color: #0288D1;">
+                <div class="content">
+                    <h1 th:text="|${companyCount}|"></h1>
+                    <p>Company</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card square" style="background-color: #0277BD;">
+                <div class="content">
+                    <h1 th:text="|${patientCount}|"></h1>
+                    <p>Patient</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

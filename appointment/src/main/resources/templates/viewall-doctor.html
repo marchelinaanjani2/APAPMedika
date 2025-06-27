@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Doctors</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- Navbar Fragment -->
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">List of Doctors</h2>
+
+        <!-- Search and Filter Form -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-10">
+                <form class="row g-3" th:action="@{/doctor/all}" method="GET">
+                    <!-- Search by Name -->
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="searchName" placeholder="Search by Name"
+                               th:value="${searchName}">
+                    </div>
+                    <!-- Filter by Specialization -->
+                    <div class="col-md-3">
+                        <select class="form-select" name="filterSpecialization">
+                            <option value="">All Specializations</option>
+                            <option th:each="spec, iterStat : ${specializations}"
+                                    th:value="${iterStat.index}"
+                                    th:text="${spec}"
+                                    th:selected="${iterStat.index} == ${filterSpecialization}"></option>
+                        </select>
+                    </div>
+                    <!-- Filter by Schedule Day -->
+                    <div class="col-md-3">
+                        <select class="form-select" name="filterSchedule">
+                            <option value="">All Schedule Days</option>
+                            <option value="1" th:selected="${filterSchedule} == '1'">Monday</option>
+                            <option value="2" th:selected="${filterSchedule} == '2'">Tuesday</option>
+                            <option value="3" th:selected="${filterSchedule} == '3'">Wednesday</option>
+                            <option value="4" th:selected="${filterSchedule} == '4'">Thursday</option>
+                            <option value="5" th:selected="${filterSchedule} == '5'">Friday</option>
+                            <option value="6" th:selected="${filterSchedule} == '6'">Saturday</option>
+                            <option value="7" th:selected="${filterSchedule} == '7'">Sunday</option>
+                        </select>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Doctor Button -->
+        <div class="d-flex justify-content-end mb-3">
+            <a href="#" class="btn btn-success" th:href="@{/doctor/create}">
+                <i class="bi bi-plus-circle"></i> Add Doctor
+            </a>
+        </div>
+
+        <!-- Doctors Table -->
+        <table id="doctorTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>ID Doctor</th>
+                    <th>Doctor</th>
+                    <th>Specialization</th>
+                    <th>Schedule (Days)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="doctor, iterStat : ${listDoctor}">
+                    <!-- No -->
+                    <td th:text="${iterStat.count}">1</td>
+                    
+                    <!-- ID Doctor -->
+                    <td th:text="${doctor.id}">UMM001</td>
+                    
+                    <!-- Doctor Name -->
+                    <td th:text="${doctor.name}">Doctor Name</td>
+                    
+                    <!-- Specialization -->
+                    <td th:text="${specializationNames[doctor.specialist]}">Specialization</td>
+                    
+                    <!-- Schedule (Days) -->
+                    <td>
+                        <span th:each="day, dayIterStat : ${doctor.schedules}">
+                            <span th:text="${dayNames[day - 1]}"></span>
+                            <span th:if="${!dayIterStat.last}">, </span>
+                        </span>
+                    </td>
+                    
+                    <!-- Action Buttons -->
+                    <td>
+                        <a class="btn btn-info btn-sm me-2" th:href="@{'/doctor/' + ${doctor.id}}">
+                            <i class="bi bi-eye"></i> Detail
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76A6Fw+O6wB64oQlr0TwQqA3qkWZLrQfFRdQ2AG3ONBt+II9VY8VYAsL5zB5b0"
+            crossorigin="anonymous"></script>
+    <!-- jQuery (required by DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJ+YtNlX9UPy8Aml/0ZZ6D1kNXwEXs0yYhGfw="
+            crossorigin="anonymous"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Initialize DataTables -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            $('#doctorTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": false, // Disable built-in search as we have custom search
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "language": {
+                    "emptyTable": "No data available in table",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ doctors",
+                    "infoEmpty": "Showing 0 to 0 of 0 doctors",
+                    "infoFiltered": "(filtered from _MAX_ total doctors)",
+                    "lengthMenu": "Show _MENU_ doctors",
+                    "loadingRecords": "Loading...",
+                    "processing": "Processing...",
+                    "zeroRecords": "No matching doctors found",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

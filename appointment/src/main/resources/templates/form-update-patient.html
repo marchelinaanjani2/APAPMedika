@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Update Patient</title>
+        <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+        <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    </head>
+    <body>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <div class="container">
+            <h2 class="mt-4">Update Patient Information</h2>
+            <form th:action="@{/patient/update}" th:object="${updatePatientRequestDTO}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                    <label for="nik" class="form-label">NIK:</label>
+                    <input type="text" th:field="*{nik}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" th:field="*{name}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" th:field="*{email}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gender:</label><br>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" th:field="*{gender}" value="true" class="form-check-input" required
+                               th:checked="${updatePatientRequestDTO.gender == true}">
+                        <label class="form-check-label">Female</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" th:field="*{gender}" value="false" class="form-check-input" required
+                               th:checked="${updatePatientRequestDTO.gender == false}">
+                        <label class="form-check-label">Male</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="birthDate" class="form-label">Birth Date:</label>
+                    <input type="date" th:field="*{birthDate}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="birthPlace" class="form-label">Birth Place:</label>
+                    <input type="text" th:field="*{birthPlace}" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Patient</button>
+            </form>
+        </div>
+    </body>
+</html>

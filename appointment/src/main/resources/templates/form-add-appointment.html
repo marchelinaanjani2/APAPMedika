@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Add Appointment</title>
+        <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+        <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    </head>
+    <body>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <div class="container">
+            <h2 class="mt-4">Create New Appointment</h2>
+            <form th:action="@{/appointment/create}" th:object="${createAppointmentRequestDTO}" method="post">
+                <div class="mb-3">
+                    <label for="doctorId" class="form-label">Doctor:</label>
+                    <select th:field="*{doctorId}" class="form-control" required>
+                        <option value="" disabled selected>Select a doctor</option>
+                        <option th:each="doctor : ${listDoctor}"
+                                th:value="${doctor.id}"
+                                th:text="${doctor.name}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="patientNik" class="form-label">Patient NIK:</label>
+                    <input type="text" th:field="*{patientNik}" class="form-control" placeholder="Enter patient's NIK" required>
+                </div>
+                <div class="mb-3">
+                    <label for="date" class="form-label">Appointment Date:</label>
+                    <input type="date" th:field="*{date}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="diagnosis" class="form-label">Diagnosis:</label>
+                    <textarea th:field="*{diagnosis}" class="form-control"></textarea>
+                </div>
+                <!-- Add fields for treatments if necessary -->
+                <button type="submit" class="btn btn-success">Create Appointment</button>
+            </form>
+        </div>
+    </body>
+</html>

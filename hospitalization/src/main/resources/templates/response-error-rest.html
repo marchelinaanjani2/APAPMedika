@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <div th:include="~{fragments/common :: css}"></div>
+    <div th:include="~{fragments/common :: js}"></div>
+    <title>Error</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="container">
+        <div class="card m-4 p-4">
+            <div class="card-body">
+                <div class="text-center">
+                    <h2 style="color: red;">Aksi Gagal</h2>
+                </div>
+                <h3 th:text="${errorMessage}"></h3>
+            </div>
+            <div class="text-center m-3">
+                <a type="button" class="btn btn-md btn-primary" href="/">Home</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

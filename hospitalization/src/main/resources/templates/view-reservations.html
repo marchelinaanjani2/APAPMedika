@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <div th:include="~{fragments/common :: css}"></div>
+    <div th:include="~{fragments/common :: js}"></div>
+    <title th:text="'Reservation ' + ${reservation.id} + ' Detail'"></title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="container">
+        <div class="text-center my-4">
+            <h2 th:text="'Reservation ' + ${reservation.id} + ' Detail'"></h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="card" style="width: 40rem;">
+                <div class="card-body">
+                    <div class="row my-3">
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'ID: ' + ${reservation.id}"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Date In: ' + ${#dates.format(reservation.dateIn, 'dd MMMM yyyy')}"></p>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Patient Name: ' + ${reservation.patientId.name}"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Date Out: ' + ${#dates.format(reservation.dateOut, 'dd MMMM yyyy')}"></p>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Email: ' + ${reservation.patientId.email}"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Status: ' + ${reservation.status}"></p>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Gender: ' + ${reservation.patientId.gender}"></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold">Facilities:</p>
+                            <ul class="list-group">
+                                <li th:each="facilityDetail : ${facilityDetails}" class="list-group-item" th:text="${facilityDetail}"></li>
+                            </ul>
+                        </div>
+                        
+                       
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Room Name: '"></p>
+                            <p class="card-text">
+                                <a th:href="@{/rooms/{roomId}(roomId=${reservation.roomId.id})}" style="color: blue; text-decoration: underline;">
+                                    <span th:text="${reservation.roomId.name}"></span>
+                                </a>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold" th:text="'Total Fee: '"></p>
+                            <p class="card-text">
+                                <a th:href="@{/fees/{reservationId}(reservationId=${reservation.id})}" style="color: blue; text-decoration: underline;">
+                                    <span th:text="'Rp ' + ${reservation.totalFee}"></span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-sm-12">
+                            <p class="card-text fw-bold">Assigned Nurse:</p>
+                            <p class="card-text" th:if="${reservation.nurse != null}" th:text="${reservation.nurse.name}"></p>
+                            <p class="card-text" th:if="${reservation.nurse == null}">-</p>
+                        </div>
+                    </div>
+    
+                    <div class="text-center m-3">
+                        <a th:href="@{/reservations/{reservationId}/update-facilities(reservationId=${reservation.id})}" class="btn btn-warning">Update Facilities</a>
+                        <a th:href="@{/reservations/{reservationId}/update-room(reservationId=${reservation.id})}" class="btn btn-warning">Update Room</a>
+            
+                    </div>
+                     <!-- Tombol Delete -->
+                     <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Delete
+                    </button>
+
+
+                     <!-- Modal Konfirmasi -->
+                     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteModalLabel">Delete Reservation</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure want to delete <strong th:text="${reservation.id}"></strong> Reservation?
+                            </div>
+                            <div class="modal-footer">
+                              <form th:action="@{/reservations/{reservationId}/delete(reservationId=${reservation.id})}" method="post">
+                                <button type="submit" class="btn btn-md btn-primary">Yes</button>
+                                <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal">Cancel</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    <div class="text-center m-3">
+                        <a type="button" class="btn btn-primary btn-md" href="/reservations">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

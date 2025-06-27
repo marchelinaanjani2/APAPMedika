@@ -1,0 +1,26 @@
+services:
+  db:
+    container_name: db-tk-37
+    image: postgres:16.4-alpine
+    ports:
+      - '20128:5432'
+    restart: 'no'
+    labels:
+      tk: "37"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret99
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend-network
+volumes:
+  db:
+    driver: local
+networks:
+  backend-network:
+    name: apap-tk-37_backend-network
+    driver: bridge
+  frontend-network:
+    name: apap-tk-37_frontend-network
+    driver: bridge

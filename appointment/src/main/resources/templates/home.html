@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+        <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    </head>
+    <body>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <div class="container text-center">
+            <div class="row pt-5 pb-2">
+                <h1>
+                    <i class="bi bi-calendar-check"></i>
+                    Selamat Datang di Appointment System!
+                    <i class="bi bi-calendar-check"></i>
+                </h1>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h3 th:text="'Jumlah appointment hari ini: ' + ${todayAppointmentCount}"></h3>
+                </div>
+            </div>
+            <!-- Tombol navigasi lainnya -->
+        </div>
+    </body>
+</html>

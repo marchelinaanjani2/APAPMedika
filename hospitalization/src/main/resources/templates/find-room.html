@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Step 2 of 3 - Find Room</title>
+    <div th:insert="~{fragments/common :: css}"></div>
+    <div th:insert="~{fragments/common :: js}"></div>
+    <script>
+        function toggleRoomSelection() {
+            const dateIn = document.getElementById('reservationDateIn').value;
+            const dateOut = document.getElementById('reservationDateOut').value;
+            const roomDropdown = document.getElementById('roomDropdown');
+            const roomContainer = document.getElementById('roomContainer');
+
+            // Enable room selection only if dates are valid
+            if (dateIn && dateOut && new Date(dateIn) <= new Date(dateOut)) {
+                roomContainer.style.display = 'block';
+                searchAvailableRooms(); // Call the function to fetch available rooms
+            } else {
+                roomContainer.style.display = 'none';
+                roomDropdown.innerHTML = ''; // Clear the dropdown
+            }
+        }
+        
+        function searchAvailableRooms() {
+            const dateIn = document.getElementById('reservationDateIn').value;
+            const dateOut = document.getElementById('reservationDateOut').value;
+
+            if (!dateIn || !dateOut || new Date(dateIn) > new Date(dateOut)) {
+                alert("Please enter valid dates.");
+                return;
+            }
+
+            fetch(`/find/room?dateIn=${dateIn}&dateOut=${dateOut}`)
+                .then(response => response.text())  // Receive the response as HTML
+                .then(html => {
+                    const roomDropdown = document.getElementById('roomDropdown');
+                    roomDropdown.innerHTML = html;  // Insert HTML into dropdown
+                    document.getElementById('roomContainer').style.display = 'block'; // Show the dropdown
+                })
+                .catch(error => {
+                    console.error('Error fetching rooms:', error);
+                });
+        }
+
+
+
+        function enableContinueButton() {
+            const roomDropdown = document.getElementById('roomDropdown');
+            const continueButton = document.getElementById('continueButton');
+            // Enable "Continue" button only if a room is selected
+            continueButton.disabled = roomDropdown.value === '';
+        }
+    </script>
+    <style>
+        .center-text {
+            text-align: center;
+        }
+
+        .form-spacing {
+            margin-bottom: 30px;
+        }
+
+        .button-container {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .btn-spacing {
+            margin-right: 10px;
+        }
+        /* Add your desired width for the card */
+        .card {
+            width: 800px; /* Change this value as needed */
+            max-width: 100%; /* Make it responsive */
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card" style="width: 600px; position: relative;">
+            <div class="card-body">
+                <h1 class="card-title font-weight-bold center-text">Step 2 of 3</h1>
+                <h5 class="card-subtitle mb-4 center-text">Find Room for <span th:text="${patientName}"></span></h5>
+
+                <form th:action="@{/find/room/{nik}(nik=${reservationDTO.nikPatient})}" th:object="${reservationDTO}" method="POST">
+                    <input type="hidden" name="nikPatient" th:value="${reservationDTO.nikPatient}" />
+                
+                    <div th:if="${listNurse == null}">
+                        <p>No nurses available at this time.</p>
+                    </div>
+                    <div th:if="${listNurse != null}">
+                        <label for="nurse" class="form-label">Assigned Nurse:</label>
+                        <select class="form-control" id="nurse" th:field="*{nurse.id}" required>
+                            <option value="" disabled selected>Assigned Nurse...</option>
+                            <option th:each="nurse : ${listNurse}" th:value="${nurse.id}" th:text="${nurse.name}"></option>
+                        </select>
+                    </div>
+                
+                    <div class="form-group row my-3">
+                        <label for="reservationDateIn" class="col-sm-5 fw-bold col-form-label">Reservation Date In</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" type="date" id="reservationDateIn" th:field="*{dateIn}" />
+                        </div>
+                    </div>
+                    <div class="form-group row my-3">
+                        <label for="reservationDateOut" class="col-sm-5 fw-bold col-form-label">Reservation Date Out</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" type="date" id="reservationDateOut" th:field="*{dateOut}" />
+                        </div>
+                    </div>
+                
+                    <button type="button" class="btn btn-primary w-100 mb-3" onclick="toggleRoomSelection()">Search</button>
+
+                    <div id="roomContainer" style="display: none;">
+                        <label for="roomDropdown" class="form-label">Available Rooms:</label>
+                        <select class="form-control" id="roomDropdown" name="room.id" onchange="enableContinueButton()">
+                            <!-- Options will be dynamically populated by JavaScript -->
+                        </select>
+                    </div>
+
+
+                    <div class="text-left m-3">
+                        <button type="submit" id="continueButton" class="btn btn-md btn-primary col-sm-2 mx-2" disabled>Save & Continue</button>
+                        <a class="btn btn-primary" href="/search/patient">Cancel</a>
+                        
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>

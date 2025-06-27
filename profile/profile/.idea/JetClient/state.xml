@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="folders">
+      <list>
+        <folderState>
+          <option name="environmentGroups">
+            <list>
+              <environmentGroupState>
+                <option name="environments">
+                  <list>
+                    <environmentState>
+                      <option name="name" value="profile" />
+                    </environmentState>
+                  </list>
+                </option>
+                <option name="name" value="Default" />
+              </environmentGroupState>
+            </list>
+          </option>
+          <option name="folders">
+            <list>
+              <folderState>
+                <option name="id" value="c23c6bb4-29e0-405f-8580-0a4fd9242aec" />
+                <option name="name" value="profile" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="347052ff-a0aa-4f06-ba1a-dfdc8f26b8ee" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="viewall patient" />
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="{{url-profile}}/patient/viewall" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="1e3ced80-ce46-49ea-986a-d27dfd8f40a6" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="view patient by id" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="nik" />
+                            <option name="value" value="4" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="2000000" />
+                      <option name="url" value="{{url-profile}}/patient/detail?nik=4" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="133af76a-bc9d-47bf-ab8e-c14cde796bd5" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="upgrade class" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="nik" />
+                            <option name="value" value="4" />
+                          </queryParamState>
+                          <queryParamState>
+                            <option name="key" value="pClass" />
+                            <option name="value" value="1" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="3000000" />
+                      <option name="url" value="{{url-profile}}/patient/upgrade?nik=4&amp;pClass=1" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="1000000" />
+              </folderState>
+              <folderState>
+                <option name="id" value="641741ee-e707-4de1-aac3-e3e34a6d0155" />
+                <option name="name" value="auth" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  email: &quot;enduser@enduser.com&quot;,&#10;  password: &quot;enduser&quot;&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="id" value="1ece0f8a-4177-41b0-800c-6b5de0a8a8e5" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="login" />
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="{{url}}/auth/login" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  name: &quot;end user&quot;,&#10;  username: &quot;enduser&quot;,&#10;  password: &quot;enduser&quot;,&#10;  email: &quot;enduser@enduser.com&quot;,&#10;  gender: true,&#10;  role: &quot;NURSE&quot;,&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="disabled" value="true" />
+                            <option name="key" value="Authorization" />
+                            <option name="value" value="Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczMjQ1ODg5NywiZXhwIjoxNzMyNTQ1Mjk3fQ.v_ef-mzFlbe6LNm8sPfRtP_G7qhhpyx2fbsyMWaV3D8" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="d50f9ca5-dea4-4ceb-94a9-e724120a92bb" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="register end user" />
+                      <option name="sortWeight" value="2000000" />
+                      <option name="url" value="{{url}}/endUser/add" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  name: &quot;doctor&quot;,&#10;  username: &quot;doctor&quot;,&#10;  password: &quot;doctor&quot;,&#10;  email: &quot;doctor@doctor.com&quot;,&#10;  gender: true,&#10;  role: &quot;DOCTOR&quot;,&#10;&#10;  //jika Doctor&#10;  specialist: 1,&#10;  yearsOfExperience: 10,&#10;  fee: 1000000,&#10;  schedule: [1,3,5]&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="disabled" value="true" />
+                            <option name="key" value="Authorization" />
+                            <option name="value" value="Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczMjQ1ODQ0MiwiZXhwIjoxNzMyNTQ0ODQyfQ.gzSoqjkxcDob24oihd7UuX0lOYCzRR0Wd_eZ3jfsI_U" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="24f7f0a1-8eb3-44c0-9bbd-385e04ee78f0" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="register doctor" />
+                      <option name="sortWeight" value="3000000" />
+                      <option name="url" value="{{url}}/endUser/add" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  name: &quot;patient&quot;,&#10;  username: &quot;patient&quot;,&#10;  password: &quot;patient&quot;,&#10;  email: &quot;patient@patient.com&quot;,&#10;  gender: true,&#10;  role: &quot;NURSE&quot;,&#10;&#10;  //jika Patient&#10;  nik: &quot;1&quot;,&#10;  birthPlace: &quot;Bekasi&quot;,&#10;  birthDate: &quot;2004-01-01&quot;,&#10;  pClass: 3,&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="disabled" value="true" />
+                            <option name="key" value="Authorization" />
+                            <option name="value" value="Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczMjQ1ODQ0MiwiZXhwIjoxNzMyNTQ0ODQyfQ.gzSoqjkxcDob24oihd7UuX0lOYCzRR0Wd_eZ3jfsI_U" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="841458d9-19ad-43ff-ad18-315cd8732935" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="register patient" />
+                      <option name="sortWeight" value="4000000" />
+                      <option name="url" value="{{url}}/endUser/add" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  name: &quot;patient&quot;,&#10;  username: &quot;patient&quot;,&#10;  password: &quot;patient&quot;,&#10;  email: &quot;patient@patient.com&quot;,&#10;  gender: true,&#10;  role: &quot;NURSE&quot;,&#10;&#10;  //jika Patient&#10;  nik: &quot;1&quot;,&#10;  birthPlace: &quot;Bekasi&quot;,&#10;  birthDate: &quot;2004-01-01&quot;,&#10;  pClass: 3,&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="headers">
+                        <list>
+                          <headerState>
+                            <option name="key" value="Authorization" />
+                            <option name="value" value="Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczMjQ1ODQ0MiwiZXhwIjoxNzMyNTQ0ODQyfQ.gzSoqjkxcDob24oihd7UuX0lOYCzRR0Wd_eZ3jfsI_U" />
+                          </headerState>
+                        </list>
+                      </option>
+                      <option name="id" value="1b5b235f-1b82-4330-95e2-6fcdf317e33e" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="get detail user by id or name or username" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="id" />
+                            <option name="value" value="a00c7b90-757d-41d3-b917-82f6e021e7aa" />
+                          </queryParamState>
+                          <queryParamState>
+                            <option name="key" value="username" />
+                            <option name="value" value="doctor" />
+                          </queryParamState>
+                          <queryParamState>
+                            <option name="key" value="email" />
+                            <option name="value" value="patient@patient.com" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="5000000" />
+                      <option name="url" value="{{url}}/endUser/detail?id=a00c7b90-757d-41d3-b917-82f6e021e7aa&amp;username=doctor&amp;email=patient@patient.com" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="2000000" />
+              </folderState>
+            </list>
+          </option>
+          <option name="id" value="aacdbc08-3185-4ac7-9668-a3640eb0ae2b" />
+          <option name="name" value="profile" />
+          <option name="selectedEnvironmentIds">
+            <map>
+              <entry key="default" value="profile" />
+            </map>
+          </option>
+          <option name="syncProperties">
+            <synchronizationPropertiesState>
+              <option name="autoSync" value="true" />
+              <option name="folderPath" value="$PROJECT_DIR$/.jetclient" />
+            </synchronizationPropertiesState>
+          </option>
+          <option name="variables">
+            <variablesState>
+              <option name="json" value="{&#10;  profile: {&#10;    &quot;url&quot;: &quot;http://localhost:8081/api&quot;,&#10;  }&#10;}" />
+            </variablesState>
+          </option>
+        </folderState>
+      </list>
+    </option>
+    <option name="id" value="74064fbb-87d1-4d9a-b8b0-152dc6dc2740" />
+    <option name="version" value="4" />
+  </component>
+</project>

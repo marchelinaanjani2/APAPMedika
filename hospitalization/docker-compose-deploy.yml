@@ -1,0 +1,22 @@
+services:
+  hospitalization:
+    container_name: hospitalization-tk-37
+    image: ${IMAGE}:latest
+    ports:
+      - '20123:8085'
+    restart: 'always'
+    labels:
+      tk: "37"
+    # Sesuaikan environment dengan kebutuhan dari masing-masing service
+    # Jika environment yang bersifat secret mohon untuk disimpan di environment gitlab
+    # Jika kamu melakukan fetch api ke service lain silakan gunakan environment yang di define pada docker compose dan dipanggil menggunkan dependency godotenv (gunakan domain yang sudah diberikan)
+    # daftarkan domain service yang melakukan fetch API ke service ini di ConfigCors.java untuk meminimalisir terjadinya CORS
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret99
+    networks:
+      - backend-network
+networks:
+  backend-network:
+    name: apap-tk-37_backend-network
+    external: true

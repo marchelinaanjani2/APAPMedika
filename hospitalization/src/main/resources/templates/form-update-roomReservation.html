@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Update Room</title>
+    <div th:insert="~{fragments/common :: css}"></div>
+    <div th:insert="~{fragments/common :: js}"></div>
+    <script>
+    
+       document.addEventListener('DOMContentLoaded', function () {
+            loadExistingRoom(); // Load the existing room when the form opens
+        });
+
+        function toggleRoomSelection() {
+            const dateIn = document.getElementById('reservationDateIn').value;
+            const dateOut = document.getElementById('reservationDateOut').value;
+            const existingRoomContainer = document.getElementById('existingRoomContainer');
+            const availableRoomContainer = document.getElementById('availableRoomContainer');
+
+            const existingRoomDropdown = document.getElementById('existingRoomDropdown');
+            const availableRoomDropdown = document.getElementById('roomDropdown');
+
+            if (dateIn && dateOut && new Date(dateIn) <= new Date(dateOut)) {
+                searchAvailableRooms(); // Cari available rooms jika tanggal valid
+            } else {
+                availableRoomContainer.style.display = 'none'; 
+                existingRoomContainer.style.display = 'block'; 
+
+                // Aktifkan name untuk existing room dan nonaktifkan name untuk available room
+                existingRoomDropdown.setAttribute('name', 'room.id');
+                availableRoomDropdown.removeAttribute('name');
+            }
+        }
+        
+        function searchAvailableRooms() {
+            const dateIn = document.getElementById('reservationDateIn').value;
+            const dateOut = document.getElementById('reservationDateOut').value;
+            const reservationId = document.getElementById('reservationId').value;
+
+            if (!dateIn || !dateOut || new Date(dateIn) > new Date(dateOut)) {
+                alert("Please enter valid dates.");
+                return;
+            }
+
+
+            fetch(`/find/room?dateIn=${dateIn}&dateOut=${dateOut}`)
+                .then(response => response.text())  // Receive the response as HTML
+                .then(html => {
+                    const roomDropdown = document.getElementById('roomDropdown');
+                    roomDropdown.innerHTML = html;  // Insert HTML into dropdown
+                    document.getElementById('existingRoomContainer').style.display = 'none'; // Sembunyikan existing room
+                    document.getElementById('availableRoomContainer').style.display = 'block'; // Tampilkan available rooms
+
+                    roomDropdown.setAttribute('name', 'room.id');
+                    document.getElementById('existingRoomDropdown').removeAttribute('name');
+                })
+                .catch(error => {
+                    console.error('Error fetching rooms:', error);
+                });
+        }
+
+
+        function enableContinueButton() {
+            const roomDropdown = document.getElementById('roomDropdown');
+            const continueButton = document.getElementById('continueButton');
+            // Enable "Continue" button only if a room is selected
+            continueButton.disabled = roomDropdown.value === '';
+        }
+
+       
+
+        function loadExistingRoom() {
+            const existingRoomId = document.getElementById('existingRoomId').value;
+            const reservationId = document.getElementById('reservationId').value;
+            
+            if (existingRoomId) {
+                fetch(`/reservations/${reservationId}/existing-room?roomId=${existingRoomId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const roomDropdown = document.getElementById('roomDropdown');
+                        roomDropdown.innerHTML = html;  // Populate with the existing room
+                        document.getElementById('roomContainer').style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching the existing room:', error);
+                    });
+            }
+        }
+
+
+    </script>
+    <style>
+        .center-text {
+            text-align: center;
+        }
+
+        .form-spacing {
+            margin-bottom: 30px;
+        }
+
+        .button-container {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .btn-spacing {
+            margin-right: 10px;
+        }
+        /* Add your desired width for the card */
+        .card {
+            width: 800px; /* Change this value as needed */
+            max-width: 100%; /* Make it responsive */
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card" style="width: 600px; position: relative;">
+            <div class="card-body">
+                <h5 class="card-subtitle mb-4 center-text">Update Room for <span th:text="${patientName}"></span></h5>
+
+                <form th:action="@{/reservations/{reservationId}/update-room(reservationId=${reservationDTO.id})}" th:object="${reservationDTO}" method="POST">
+                    <input type="hidden" name="nikPatient" th:field="*{nikPatient}" />
+                    <input type="hidden" id="existingRoomId" th:value="${room.id}" />
+                    <input type="hidden" id="reservationId" th:value="${id}" />
+                    <input type="hidden" name="patient.id" th:value="${patient.id}"/>
+
+
+                
+                    <div th:if="${listNurse == null}">
+                        <p>No nurses available at this time.</p>
+                    </div>
+                    <div th:if="${listNurse != null}">
+                        <label for="nurse" class="form-label">Assigned Nurse:</label>
+                        <select class="form-control" id="nurse" th:field="*{nurse.id}" required>
+                            <option value="" disabled selected>Assigned Nurse...</option>
+                            <option th:each="nurse : ${listNurse}" 
+                                th:value="${nurse.id}" 
+                                th:text="${nurse.name}"
+                                th:selected="${nurse.id} == *{nurse.id}"></option>
+                        </select>
+                    </div>
+                
+                    <div class="form-group row my-3">
+                        <label for="reservationDateIn" class="col-sm-5 fw-bold col-form-label">Reservation Date In</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" type="date" id="reservationDateIn" th:field="*{dateIn}" th:value="*{dateIn}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row my-3">
+                        <label for="reservationDateOut" class="col-sm-5 fw-bold col-form-label">Reservation Date Out</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" type="date" id="reservationDateOut" th:field="*{dateOut}" th:value="*{dateOut}" />
+                        </div>
+                    </div>
+                
+                    <button type="button" class="btn btn-primary w-100 mb-3" onclick="toggleRoomSelection()">Search</button>
+
+                    <div id="existingRoomContainer" style="display: block;">
+                        <label for="existingRoomDropdown" class="form-label">Existing Room:</label>
+                        <select class="form-control" id="existingRoomDropdown" required>
+                            <option th:value="${existingRoom.id}" th:text="${existingRoom.name}" selected></option>
+                        </select>
+                    </div>
+                    
+                    <div id="availableRoomContainer" style="display: none;">
+                        <label for="roomDropdown" class="form-label">Available Rooms:</label>
+                        <select class="form-control" id="roomDropdown" onchange="enableContinueButton()" required>
+                            <option value="" disabled selected>Select a room...</option>
+                            <option th:each="room : ${availableRooms}" 
+                                    th:value="${room.id}" 
+                                    th:text="${room.name}">
+                            </option>
+                        </select>
+                    </div>
+                    
+                    
+                    
+                    
+
+                    <div id="roomContainer" style="display: block;">
+                        <label for="roomDropdown" class="form-label">Available Rooms:</label>
+                        <select class="form-control" id="roomDropdown" name="room.id" th:field="*{room.id}" th:each="room : ${listRoom}">
+                            <option th:value="${room.id}" th:text="${room.name}" th:selected="${room.id == room.id}"></option>
+                        </select>
+                    </div>
+                    
+
+
+                    <div class="text-left m-3">
+                        <button type="submit" id="continueButton" class="btn btn-md btn-primary col-sm-2 mx-2" disabled>Save & Continue</button>
+                        <a class="btn btn-primary" href="/reservations/{reservationId}">Cancel</a>
+                        
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <div th:include="~{fragments/common :: css}"></div>
+    <div th:include="~{fragments/common :: js}"></div>
+    <title>Detail Fee</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+    
+    <div class="container my-4">
+        <div class="text-center">
+            <h2 class="mb-4">Room Detail</h2>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="card shadow" style="width: 60rem;">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${roomDetail}"></h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${roomTotal}"></h6>
+                    
+                    <h3 class="mt-4">Facilities:</h3>
+                    <ul class="list-group mb-4">
+                        <li th:each="facilityDetail : ${facilityDetails}" class="list-group-item" th:text="${facilityDetail}"></li>
+                    </ul>
+                    
+                    <h5>Total Fee:</h5>
+                    <p class="card-text fw-bold" th:text="${totalFee}"></p>
+                    
+                    <div class="text-center m-3">
+                        <a href="#" onclick="window.history.back();" class="btn btn-secondary">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

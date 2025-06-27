@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Success</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- Navbar Fragment -->
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle"></i> <span th:text="${responseMessage}">Operation Successful</span>
+        </div>
+        <a class="btn btn-primary" href="/">Back to Home</a>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76A6Fw+O6wB64oQlr0TwQqA3qkWZLrQfFRdQ2AG3ONBt+II9VY8VYAsL5zB5b0"
+            crossorigin="anonymous"></script>
+</body>
+</html>

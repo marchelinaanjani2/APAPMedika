@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Appointment Details</title>
+        <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+        <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    </head>
+    <body>
+        <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+        <div class="container">
+            <h2 class="mt-4">Appointment Details</h2>
+            <table class="table">
+                <tr>
+                    <th>ID</th>
+                    <td th:text="${appointment.id}"></td>
+                </tr>
+                <tr>
+                    <th>Doctor</th>
+                    <td th:text="${appointment.doctor.name}"></td>
+                </tr>
+                <tr>
+                    <th>Patient</th>
+                    <td th:text="${appointment.patient.name}"></td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td th:text="${#dates.format(appointment.date, 'dd-MM-yyyy')}"></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td th:text="${getStatusText(appointment.status)}"></td>
+                </tr>
+                <tr>
+                    <th>Diagnosis</th>
+                    <td th:text="${appointment.diagnosis}"></td>
+                </tr>
+                <tr>
+                    <th>Total Fee</th>
+                    <td th:text="${appointment.totalFee}"></td>
+                </tr>
+                <tr>
+                    <th>Created At</th>
+                    <td th:text="${#dates.format(appointment.createdAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                </tr>
+                <tr>
+                    <th>Created By</th>
+                    <td th:text="${appointment.createdBy}"></td>
+                </tr>
+                <tr>
+                    <th>Updated At</th>
+                    <td th:text="${#dates.format(appointment.updatedAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                </tr>
+                <tr>
+                    <th>Updated By</th>
+                    <td th:text="${appointment.updatedBy}"></td>
+                </tr>
+            </table>
+            <div class="mt-3">
+                <a th:href="@{'/appointment/' + ${appointment.id} + '/done'}" class="btn btn-success">Mark as Done</a>
+                <a th:href="@{'/appointment/' + ${appointment.id} + '/cancel'}" class="btn btn-warning">Cancel</a>
+                <a th:href="@{'/appointment/' + ${appointment.id} + '/update'}" class="btn btn-primary">Update</a>
+                <a th:href="@{'/appointment/' + ${appointment.id} + '/delete'}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </body>
+</html>

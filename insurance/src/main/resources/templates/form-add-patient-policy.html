@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <title>Add Company</title>
+</head>
+
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container">
+    <div class="text-center my-4">
+        <h2>New Patient & Policy</h2>
+    </div>
+    <div class="row justify-content-center">
+        <div class="card" style="width: 60rem;">
+            <div class="card-body">
+                <form th:action="@{/policy/create-with-patient}" th:object="${policyDTO}" method="POST">
+                    <div class="row mb-3">
+                        <!-- Column 1 -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="patient_name" class="form-label fw-bold">Name</label>
+                                <input class="form-control" type="text" id="patient_name" th:field="*{name}" placeholder="Name"/>
+                            </div>
+
+                            <div class="mb-3 d-flex align-items-center">
+                                <label class="form-label fw-bold me-2">Gender:</label>
+                                <div class="form-check me-2">
+                                    <input class="form-check-input" type="radio" name="gender" id="genderm" th:field="*{gender}" value="0">
+                                    <label class="form-check-label" for="genderm">Male</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="genderf" th:field="*{gender}" value="1">
+                                    <label class="form-check-label" for="genderf">Female</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expiryDate" class="form-label fw-bold">Expiry Date</label>
+                                <input class="form-control" type="date" id="expiryDate" th:field="*{expiryDate}"/>
+                            </div>
+                        </div>
+
+                        <!-- Column 2 -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="nik" class="form-label fw-bold">NIK</label>
+                                <input class="form-control" type="text" id="nik" th:field="*{nik}" placeholder="NIK"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label fw-bold">Date of Birth</label>
+                                <input class="form-control" type="date" id="address" th:field="*{birthDate}" placeholder="dd-mm-yy"/>
+                            </div>
+                        </div>
+
+                        <!-- Column 3 -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-bold">Email</label>
+                                <input class="form-control" type="text" id="email" th:field="*{email}" placeholder="Email"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="insurance-class" class="form-label fw-bold">Insurance Class</label>
+                                <select th:field="*{piClass}" class="form-select" id="insurance-class" name="companyId">
+                                    <option th:value="1">Class 1 - Limit: Rp100.000.000,00</option>
+                                    <option th:value="2">Class 2 - Limit: Rp50.000.000,00</option>
+                                    <option th:value="3">Class 3 - Limit: Rp25.000.000,00</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Divider 1 -->
+                    <hr class="my-4"/>
+
+                    <!-- Company selection and Load Coverage -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="companyId" class="form-label fw-bold">Select Company</label>
+                            <select class="form-select" id="companyId" name="companyId" th:field="*{company}">
+                                <option value="" disabled selected>Select a company</option>
+                                <option th:each="company: ${companies}" th:value="${company.id}" th:text="${company.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end justify-content-end">
+                            <button class="btn btn-primary" type="button" onclick="loadCoverage()">Load Coverage</button>
+                        </div>
+                    </div>
+
+                    <!-- Divider 2 -->
+                    <hr class="my-4"/>
+
+                    <!-- Coverage section -->
+                    <div class="form-group row mb-3">
+                        <div class="col-md-8">
+                            <h5 class="mb-3">Company Coverages</h5>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <label for="totalCoverageAmount" class="form-label fw-bold">Total Coverage:</label>
+                            <span id="totalCoverageAmount">Rp0,00</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table" id="coverageTable">
+                            <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Coverage Name</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center m-3">
+                        <a class="btn btn-danger" href="/policy/all">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<script>
+    $(document).ready(function () {
+        $('#coverageTable').DataTable();
+    });
+
+    function loadCoverage() {
+        const companyId = $('#companyId').val();
+
+        if (!companyId) {
+            alert("Please select a company.");
+            return;
+        }
+
+        $.ajax({
+            url: `http://localhost:8080/api/company/get/${companyId}/coverage`,
+            method: 'GET',
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+
+                const table = $('#coverageTable').DataTable();
+                table.clear();
+
+                let counter = 1;
+                let totalCoverage = 0;
+
+                const rupiahFormatter = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                });
+
+                response.data.forEach(function (coverage) {
+                    totalCoverage += coverage.coverageAmount;
+                    table.row.add([
+                        counter++,
+                        coverage.name,
+                        rupiahFormatter.format(coverage.coverageAmount)
+                    ]);
+                });
+
+                $('#totalCoverageAmount').text(rupiahFormatter.format(totalCoverage));
+                table.draw();
+            },
+            error: function () {
+                alert("Error loading coverage data.");
+            }
+        });
+    }
+</script>
+</body>
+</html>

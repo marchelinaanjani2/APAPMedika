@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Facilities</title>
+    <div th:include="~{fragments/common :: css}"></div>
+    <div th:include="~{fragments/common :: js}"></div>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="container">
+        <div class="text-center my-4">
+            <h2>Step 3 of 3</h2>
+            <h2>Add Facilities (Optional)</h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="card" style="width: 60rem;">
+                <div class="card-body">
+                    <form th:action="@{/reservations/create}" th:object="${reservationDTO}" method="POST">
+                        <input type="hidden" name="nikPatient" th:value="${reservationDTO.nikPatient}" />
+                        <input type="hidden" name="room.id" th:value="${reservationDTO.room.id}" />
+                        <input type="hidden" name="dateIn" th:value="${#dates.format(reservationDTO.dateIn, 'yyyy-MM-dd')}" />
+                        <input type="hidden" name="patient.id" th:value="${reservationDTO.patient.id}" />
+                        <input type="hidden" name="id" th:value="${reservationDTO.id}" />   
+                        <input type="hidden" name="patient.name" th:value="${reservationDTO.patient.Name}" />                        
+                        <input type="hidden" name="dateOut" th:value="${#dates.format(reservationDTO.dateOut, 'yyyy-MM-dd')}" />                        
+                        <input type="hidden" name="nurse.id" th:value="${reservationDTO.nurse != null ? reservationDTO.nurse.id : ''}" />
+
+
+                        <div class="form-group row my-3">
+                            <label for="room" class="col-sm-2 fw-bold col-form-label">Room</label>
+                            <p class="col-sm-1 fw-bold col-form-label">:</p>
+                            <div class="col-sm-9">
+                                <!-- <input class="form-control" type="text" id="room" 
+                                    th:field="${reservationDTO.room}" 
+                                    th:value="|${reservationDTO.room.name} (Rp${#numbers.formatDecimal(reservationDTO.room.pricePerDay, 1, ',', '.')} /Day, ${reservationDTO.quotaRoom} Quota Available, Max ${reservationDTO.room.maxCapacity} Pax)|" 
+                                    readonly /> -->
+                                
+                                    <input class="form-control" type="text" id="room" th:field="${reservationDTO.room}" required readonly/>
+                            </div>                                                                               
+                        </div>
+                        
+
+                        <div class="form-group column my-3">
+                            <label for="facilities" class="col-sm-2 fw-bold col-form-label">Facilities:</label>
+                            <table class="table">
+                                <th class="d-flex justify-content-end">
+                                    <button class="btn btn-primary" type="submit" name="addRow">Add Row</button>
+                                </th>
+                                <tbody>
+                                    <tr th:each="facility, iterationStatus : ${reservationDTO.facilities}">
+                                        <td>
+                                            <select th:field="*{facilities[__${iterationStatus.index}__].id}" class="form-control">
+                                                <option value="" disabled selected>Select a facility</option>
+                                                <option th:each="facility : ${listFacilities}" 
+                                                        th:value="${facility.id}" 
+                                                        th:text="${facility.name} + ' (+Rp ' + ${facility.fee} + ')'"></option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <button th:value="${iterationStatus.index}" class="btn btn-danger"
+                                                    type="submit" name="deleteRow">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+
+                        <div class="text-left m-3">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <a class="btn btn-primary" href="/find/room">Previous</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

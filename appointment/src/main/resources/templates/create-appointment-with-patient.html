@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Patient & Appointment</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar Fragment -->
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">New Patient & Appointment</h2>
+        <form th:action="@{/appointment/create-with-patient}" method="post">
+
+            <!-- Patient Information -->
+            <h4>Patient Information</h4>
+            <!-- Bind to CreatePatientRequestDTO -->
+            <div th:object="${createPatientRequestDTO}">
+                <div class="mb-3">
+                    <label for="patientName" class="form-label">Name</label>
+                    <input type="text" class="form-control" th:field="*{name}" required>
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="nik" class="form-label">NIK</label>
+                    <input type="text" class="form-control" th:field="*{nik}" required>
+                    <div th:if="${#fields.hasErrors('nik')}" th:errors="*{nik}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" required>
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{gender}" value="true" id="genderFemale" required>
+                            <label class="form-check-label" for="genderFemale">Female</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{gender}" value="false" id="genderMale" required>
+                            <label class="form-check-label" for="genderMale">Male</label>
+                        </div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="birthDate" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" th:field="*{birthDate}" required>
+                    <div th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="birthPlace" class="form-label">Birth Place</label>
+                    <input type="text" class="form-control" th:field="*{birthPlace}" required>
+                    <div th:if="${#fields.hasErrors('birthPlace')}" th:errors="*{birthPlace}" class="text-danger"></div>
+                </div>
+            </div>
+
+            <!-- Appointment Information -->
+            <h4>Appointment Information</h4>
+            <!-- Bind to CreateAppointmentRequestDTO -->
+            <div th:object="${createAppointmentRequestDTO}">
+            <!-- Dropdown Pilih Dokter -->
+            <div class="form-group">
+                <label for="doctorId" class="form-label">Pilih Dokter</label>
+                <select id="doctorId" name="doctorId" class="form-control" required>
+                    <option value="">Pilih Dokter</option>
+                    <option th:each="doctor : ${listDoctor}" th:value="${doctor.id}" th:text="${doctor.name}"></option>
+                </select>
+            </div>
+
+            <!-- Dropdown Pilih Tanggal Janji -->
+            <div class="form-group">
+                <label for="appointmentDateStr" class="form-label">Pilih Tanggal</label>
+                <select id="appointmentDateStr" name="appointmentDateStr" class="form-control" required>
+                    <option value="">Pilih Tanggal</option>
+                </select>
+            </div>
+
+            <!-- Submit and Cancel Buttons -->
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Submit</button>
+            <a href="#" class="btn btn-secondary ms-2" th:href="@{/appointment/all}"><i class="bi bi-x-circle"></i> Cancel</a>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript untuk AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#doctorId').change(function() {
+            var doctorId = $(this).val();
+            if (doctorId) {
+                $.ajax({
+                    url: '/appointment/available-dates',
+                    type: 'GET',
+                    data: { doctorId: doctorId },
+                    success: function(data) {
+                        var $appointmentDateStr = $('#appointmentDateStr');
+                        $appointmentDateStr.empty();
+                        $appointmentDateStr.append('<option value="">Pilih Tanggal</option>');
+                        $.each(data, function(index, value) {
+                            $appointmentDateStr.append('<option value="' + value + '">' + value + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#appointmentDateStr').empty().append('<option value="">Pilih Tanggal</option>');
+            }
+        });
+    });
+</script>
+</body>
+</html>

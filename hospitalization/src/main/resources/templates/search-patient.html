@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Search Patient</title>
+    <div th:include="~{fragments/common :: css}"></div>
+    <div th:include="~{fragments/common :: js}"></div>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navibar(activeLink=${activeLink})}"></nav>
+
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <!-- Search Card -->
+        <div class="card" style="width: 600px;" th:if="${notFound == false} and ${patient == null}">
+            <div class="card-body text-center">
+                <h1 class="card-title font-weight-bold">Search Patient</h1>
+                <form th:action="@{/search/patient}" method="post">
+                    <div class="mb-3">
+                        <label for="nik" class="form-label">NIK:</label>
+                        <input type="text" id="nik" name="nik" th:value="${nik}" required class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Not Found Message Card -->
+        <div class="card" style="width: 600px;" th:if="${notFound}">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold">Patient Not Found</h5>
+                <p class="card-text">
+                    Please insert this identity as a new patient before making the reservation.
+                </p>
+                <a th:href="@{/create/patient}" class="btn btn-primary w-100">Insert New Patient</a>
+            </div>
+        </div>
+
+        <!-- Patient Found Card -->
+        <div class="card" style="width: 600px;" th:if="${patient != null}">
+            <div class="card-body text-center">
+                <h5 class="card-title font-weight-bold">Patient Found</h5>
+                <div class="mb-3">
+                    <label for="patientNik" class="form-label">NIK:</label>
+                    <input type="text" id="patientNik" name="nik" th:value="${patient.nik}" disabled
+                        class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="patientName" class="form-label">Name:</label>
+                    <input type="text" id="patientName" name="name" th:value="${patient.name}" disabled
+                        class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="patientGender" class="form-label">Gender:</label>
+                    <input type="text" id="patientGender" name="gender"
+                        th:value="${patient.gender == 'M' ? 'Male' : 'Female'}" disabled class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="patientDob" class="form-label">Date of Birth:</label>
+                    <input type="text" id="patientDob" name="dob"
+                        th:value="${#dates.format(patient.birthDate, 'yyyy-MM-dd')}" disabled class="form-control">
+                </div>
+                <div class="mb-3">
+                    <a th:href="@{/find/room/{nik}(nik=${patient.nik})}" class="btn btn-primary w-100">Create Reservation</a>
+                </div>
+                
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

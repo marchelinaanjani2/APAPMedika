@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Apap Medika</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <style>
+        /* Custom style for navbar color */
+        .navbar-custom {
+            background-color: #6f42c1; /* Purple color */
+        }
+
+        /* Change the brand color to Maroon */
+        .navbar-brand {
+            color: maroon !important; /* Maroon color for the brand */
+        }
+
+        /* Ensure toggler icon visibility */
+        .navbar-toggler-icon {
+            background-color: rgb(99, 21, 21); /* Custom color for the icon */
+        }
+
+        /* Active link customization */
+        .nav-link.active {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom" th:fragment="navibar(activeLink)">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold">Apap Medika</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeLink} == 'home' ? 'active fw-bold' : ''"
+                            th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeLink} == 'reservation' ? 'active fw-bold' : ''"
+                            th:href="@{/reservations}">Reservation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeLink} == 'room' ? 'active fw-bold' : ''"
+                            th:href="@{/rooms}">Rooms</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: hospitalization2206082770
+  datasource:
+    # url: jdbc:postgresql://db:5432/hospitalization
+    url: jdbc:postgresql://localhost:15001/hospitalization2206082770
+    username: postgres
+    password: secret99
+  jpa:
+    hibernate:
+      ddl-auto: create
+      properties:
+        hibernate:
+          jdbc:
+            lob:
+              non-contextual-creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8085
+
+hospitalization2206082770:
+  app:
+    jwtSecret: "HasahZEdlrHVvnBMIlKPAoXFRILWdwVAuaGT"
+    jwtExpirationMs: 86400000
+
